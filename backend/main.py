@@ -1,8 +1,8 @@
-from fastapi import FastAPI, HTTPException, Form
+from fastapi import FastAPI, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 
-from equation import equations, makeSTL
+from equation import makeSTL
 
 app = FastAPI()
 
@@ -32,8 +32,7 @@ async def equation(formula: str = Form()) -> None:
     :param formula: a valid equation
     :return:
     """
-    newId = max(equations.keys()) + 1
-    equations[newId] = formula
+    return
 
 
 @app.post('/stlfile', tags=['geometry'], status_code=204)
@@ -43,10 +42,6 @@ async def stlfile(formula: str = Form()) -> FileResponse:
     :param formula: a valid equation
     :return:
     """
-    try:
-        # source = makeSTL(eid)
-        pass
-    except KeyError:
-        raise HTTPException(status_code=404, detail='Error: No equation found by that id')
-    else:
-        return FileResponse('backend/test.stl', media_type='model/stl')
+    surface = makeSTL(formula.lower())
+    surface.save('to_download.stl')
+    return FileResponse('to_download.stl', media_type='model/stl', filename='equation.stl')
