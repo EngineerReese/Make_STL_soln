@@ -1,7 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 
-from equation import equations
+from equation import equations, makeSTL
 
 app = FastAPI()
 
@@ -38,11 +39,16 @@ async def equation() -> dict:
     }
 
 
-@app.get('/file/{fid}', tags=['geometry'])
-async def stlfile(fid: int) -> dict:
+@app.get('/stlfile/{eid}', tags=['geometry'])
+async def stlfile(eid: int) -> FileResponse:
     """
     downloads a stl file of the identified equation
-    :param fid:
+    :param eid: id of an equation previously uploaded
     :return:
     """
-    return {}
+    try:
+        source = makeSTL(eid)
+    except KeyError:
+        raise HTTPException(status_code=404, detail='Error: No equation found by that id')
+    else:
+        return FileResponse('')

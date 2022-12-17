@@ -8,3 +8,7 @@ Replace with DB for scale
 equations = {
     0: '(x-2)^2+(y-2)^2+2'
 }
+
+
+async def makeSTL(eid):
+    return equations[eid]
