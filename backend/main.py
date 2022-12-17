@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 
@@ -22,17 +22,17 @@ app.add_middleware(
 
 @app.get('/', tags=['root'])
 async def root():
-    return {}
+    return FileResponse('frontend/main.html')
 
 
 @app.post('/equation', tags=['geometry'])
-async def equation() -> dict:
+async def equation(formula: str = Form()) -> dict:
     """
     Gets an equation from the user to be turned into an STL
     :return:
     """
     newId = max(equations.keys()) + 1
-    equations[newId] = 0
+    equations[newId] = formula
     return {
         'message': 'equation added',
         'id': newId,
@@ -51,4 +51,4 @@ async def stlfile(eid: int) -> FileResponse:
     except KeyError:
         raise HTTPException(status_code=404, detail='Error: No equation found by that id')
     else:
-        return FileResponse('')
+        return FileResponse(source)
