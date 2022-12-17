@@ -29,22 +29,24 @@ async def root():
 async def equation(formula: str = Form()) -> None:
     """
     Gets an equation from the user to be turned into an STL
+    :param formula: a valid equation
     :return:
     """
     newId = max(equations.keys()) + 1
     equations[newId] = formula
 
 
-@app.get('/stlfile/{eid}', tags=['geometry'])
-async def stlfile(eid: int) -> FileResponse:
+@app.post('/stlfile', tags=['geometry'], status_code=204)
+async def stlfile(formula: str = Form()) -> FileResponse:
     """
     downloads a stl file of the identified equation
-    :param eid: id of an equation previously uploaded
+    :param formula: a valid equation
     :return:
     """
     try:
-        source = makeSTL(eid)
+        # source = makeSTL(eid)
+        pass
     except KeyError:
         raise HTTPException(status_code=404, detail='Error: No equation found by that id')
     else:
-        return FileResponse(source)
+        return FileResponse('backend/test.stl', media_type='model/stl')
