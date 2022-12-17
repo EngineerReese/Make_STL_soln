@@ -1,0 +1,9 @@
+[tool.black]
+    py36 = true
+    include = '\.pyi?$'
+    exclude = '''
+    /(
+        \.git
+      | \.venv
+      | dist
+    )/
