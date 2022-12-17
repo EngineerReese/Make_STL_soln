@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from equation import equations
+
 app = FastAPI()
 
 origins = [
@@ -22,20 +24,25 @@ async def root():
     return {}
 
 
-@app.post('/equation')
-async def equation():
+@app.post('/equation', tags=['geometry'])
+async def equation() -> dict:
     """
     Gets an equation from the user to be turned into an STL
     :return:
     """
-    return
+    newId = max(equations.keys()) + 1
+    equations[newId] = 0
+    return {
+        'message': 'equation added',
+        'id': newId,
+    }
 
 
-@app.get('/file/{fid}')
-async def stlfile(fid):
+@app.get('/file/{fid}', tags=['geometry'])
+async def stlfile(fid: int) -> dict:
     """
     downloads a stl file of the identified equation
     :param fid:
     :return:
     """
-    return
+    return {}
