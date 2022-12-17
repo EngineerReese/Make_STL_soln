@@ -25,18 +25,14 @@ async def root():
     return FileResponse('frontend/main.html')
 
 
-@app.post('/equation', tags=['geometry'])
-async def equation(formula: str = Form()) -> dict:
+@app.post('/equation', tags=['geometry'], status_code=204)
+async def equation(formula: str = Form()) -> None:
     """
     Gets an equation from the user to be turned into an STL
     :return:
     """
     newId = max(equations.keys()) + 1
     equations[newId] = formula
-    return {
-        'message': 'equation added',
-        'id': newId,
-    }
 
 
 @app.get('/stlfile/{eid}', tags=['geometry'])
