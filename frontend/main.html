@@ -6,9 +6,7 @@
     <script src="http://threejs.org/build/three.min.js"></script>
     <script src="http://threejs.org/examples/js/loaders/STLLoader.js"></script>
     <script src="http://threejs.org/examples/js/controls/OrbitControls.js"></script>
-    <script type="text/javascript">
-        import * as THREE from 'three';
-
+    <script type="module">
         function STLViewer(model, elementID) {
             const elem = document.getElementById(elementID);
             const camera = new THREE.PerspectiveCamera(70, elem.clientWidth / elem.clientHeight, 1, 1000);
@@ -86,9 +84,11 @@
     <div style="text-align: center">
         <div id="model" style="width: 500px; height: 500px; text-align: center; margin: 0 auto"> </div>
         <form method="post">
-          <input type="text" name="formula" placeholder="Enter an equation">
+            <label>
+                <input type="text" name="formula" placeholder="Enter an equation">
+            </label>
 
-          <button type="submit" onclick="renderSTL()">Generate STL</button>
+            <button type="submit" onclick="renderSTL()">Generate STL</button>
           <button type="submit" formaction="/stlfile">Download</button>
         </form>
     </div>
