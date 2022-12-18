@@ -1,4 +1,6 @@
-from fastapi import FastAPI, Form, Body
+import json
+
+from fastapi import FastAPI, Body
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 
@@ -26,24 +28,19 @@ async def root() -> FileResponse:
 
 
 @app.post('/equation', tags=['geometry'], status_code=204)
-async def equation(formula: str = Body()) -> FileResponse:
+async def equation(body: str = Body()) -> FileResponse:
     """
     Gets an equation from the user to be turned into an STL
-    :param formula: a valid equation
+    :param body: an unparsed json containing formula key
     :return:
     """
+    formula = json.loads(body)['formula']
     surface = makeSTL(formula.lower())
     surface.save('to_download.stl')
     return FileResponse('to_download.stl', media_type='model/stl', filename='equation.stl')
 
 
-@app.post('/stlfile', tags=['geometry'], status_code=204)
-async def stlfile(formula: str = Form()) -> FileResponse:
-    """
-    downloads a stl file of the identified equation
-    :param formula: a valid equation
-    :return:
-    """
-    surface = makeSTL(formula.lower())
-    surface.save('to_download.stl')
+@app.get('/stlfile', tags=['geometry'], status_code=204)
+async def stlfile() -> FileResponse:
+    """downloads the most recent stl file"""
     return FileResponse('to_download.stl', media_type='model/stl', filename='equation.stl')

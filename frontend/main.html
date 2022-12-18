@@ -47,7 +47,6 @@
                 var middle = new THREE.Vector3();
                 geometry.computeBoundingBox();
                 geometry.boundingBox.getCenter(middle);
-                mesh.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(-middle.x, -middle.y, -middle.z));
 
                 const largestDimension = Math.max(
                     geometry.boundingBox.max.x,
@@ -67,20 +66,18 @@
         }
 
         const renderSTL = async function() {
-            const response = await fetch('/equation', {
+            await fetch('/equation', {
                 method: 'POST',
                 body: JSON.stringify({formula: document.getElementById('formula').value}),
             });
-            const myJson = await response.json();
-            console.log(myJson)
-            STLViewer("equation", "model")
+            STLViewer('/stlfile', "model")
         }
     </script>
 </head>
 <body>
     <div style="text-align: center">
-        <div id="model" style="width: 500px; height: 500px; text-align: center; margin: 0 auto"> </div>
-        <form method="post">
+        <div id="model" style="width: 750px; height: 750px; text-align: center; margin: 0 auto"> </div>
+        <form method="get">
             <label>
                 <input type="text" id="formula" name="formula" placeholder="Enter an equation">
             </label>
