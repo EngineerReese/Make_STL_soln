@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Form
+from fastapi import FastAPI, Form, Body
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 
@@ -7,8 +7,8 @@ from equation import makeSTL
 app = FastAPI()
 
 origins = [
-    'http://localhost:3000',
-    'localhost:3000',
+    'http://localhost:8080',
+    'localhost:8080',
 ]
 
 app.add_middleware(
@@ -21,12 +21,12 @@ app.add_middleware(
 
 
 @app.get('/', tags=['root'])
-async def root():
-    return FileResponse('frontend/main.html')
+async def root() -> FileResponse:
+    return FileResponse('../frontend/main.html')
 
 
 @app.post('/equation', tags=['geometry'], status_code=204)
-async def equation(formula: str = Form()) -> FileResponse:
+async def equation(formula: str = Body()) -> FileResponse:
     """
     Gets an equation from the user to be turned into an STL
     :param formula: a valid equation
