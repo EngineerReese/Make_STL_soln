@@ -26,13 +26,15 @@ async def root():
 
 
 @app.post('/equation', tags=['geometry'], status_code=204)
-async def equation(formula: str = Form()) -> None:
+async def equation(formula: str = Form()) -> FileResponse:
     """
     Gets an equation from the user to be turned into an STL
     :param formula: a valid equation
     :return:
     """
-    return
+    surface = makeSTL(formula.lower())
+    surface.save('to_download.stl')
+    return FileResponse('to_download.stl', media_type='model/stl', filename='equation.stl')
 
 
 @app.post('/stlfile', tags=['geometry'], status_code=204)

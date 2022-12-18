@@ -5,11 +5,14 @@
     <title>Parametric File Generator</title>
 </head>
 <body>
-    <form method="post">
-      <input type="text" name="formula" placeholder="Enter an equation">
+    <div style="text-align: center">
+        <div id="model" style="width: 500px; height: 500px; text-align: center; margin: 0 auto"> </div>
+        <form method="post">
+          <input type="text" name="formula" placeholder="Enter an equation">
 
-      <button type="submit" formaction="/equation">Generate STL</button>
-      <button type="submit" formaction="/stlfile">Download</button>
-    </form>
+          <button type="submit" onclick="renderSTL()">Generate STL</button>
+          <button type="submit" formaction="/stlfile">Download</button>
+        </form>
+    </div>
 </body>
 </html>
