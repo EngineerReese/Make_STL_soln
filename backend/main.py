@@ -1,9 +1,11 @@
+from math import ceil
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
-from equation import makeSTL
+from equation import discretizeEquation, makeMesh
 
 app = FastAPI()
 
@@ -35,15 +37,32 @@ class FunctionSTL(BaseModel):
     yMax: float
     yStep: float
 
+    @property
+    def xNodeCount(self):
+        return ceil((self.xMax - self.xMin) / self.xStep)
+
+    @property
+    def yNodeCount(self):
+        return ceil((self.yMax - self.yMin) / self.yStep)
+
 
 @app.post('/equation', tags=['geometry'], status_code=204)
-async def equation(func: FunctionSTL) -> FileResponse:
+async def equation(body: FunctionSTL) -> FileResponse:
     """
     Gets an equation from the user to be turned into an STL
     :param body: an unparsed json containing formula key
     :return:
     """
-    surface = makeSTL(func.formula.lower())
+    mesh = discretizeEquation(
+        body.formula.lower(),
+        xcount=body.xNodeCount,
+        ycount=body.yNodeCount,
+        xmin=body.xMin,
+        xmax=body.xMax,
+        ymin=body.yMin,
+        ymax=body.yMax,
+    )
+    surface = makeMesh(*mesh)
     surface.save('to_download.stl')
     return FileResponse('to_download.stl', media_type='model/stl', filename='equation.stl')
 
