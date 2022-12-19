@@ -68,7 +68,18 @@
         const renderSTL = async function() {
             await fetch('/equation', {
                 method: 'POST',
-                body: JSON.stringify({formula: document.getElementById('formula').value}),
+                body: JSON.stringify({
+                    formula: document.getElementById('formula').value,
+                    xMin: -5,
+                    xMax: 5,
+                    xStep: 1,
+                    yMin: -5,
+                    yMax: 5,
+                    yStep: 1,
+                }),
+                headers: {
+                  'Content-Type': 'application/json'
+                },
             });
             STLViewer('/stlfile', "model")
         }
@@ -76,14 +87,48 @@
 </head>
 <body>
     <div style="text-align: center">
-        <div id="model" style="width: 750px; height: 750px; text-align: center; margin: 0 auto"> </div>
+        <div id="model" style="width: 750px; height: 650px; text-align: center; margin: 0 auto"> </div>
         <form method="get">
             <label>
-                <input type="text" id="formula" name="formula" placeholder="Function entry">
+                Function Entry:
+                <input type="text" id="formula" name="formula" placeholder="(x-2)^2+(y-2)^2+2">
             </label>
-
+            <br/>
             <button type="button" onclick="renderSTL()">Generate STL</button>
-          <button type="submit" formaction="/stlfile">Download</button>
+            <button type="submit" formaction="/stlfile">Download</button>
+            <br/>
+            <br/>
+            <label>
+                X:
+                <label>
+                    min:
+                    <input type="text" name="xMin" value="5">
+                </label>
+                <label>
+                    max:
+                    <input type="text" name="xMax" value="-5">
+                </label>
+                <label>
+                    step:
+                    <input type="number" name="yMax" value="0.5" min="0" step="0.25">
+                </label>
+            </label>
+            <br/>
+            <label>
+                Y:
+                <label>
+                    min:
+                    <input type="text" name="yMin" value="5">
+                </label>
+                <label>
+                    max:
+                    <input type="text" name="yMax" value="-5">
+                </label>
+                <label>
+                    step:
+                    <input type="number" name="yMax" value="0.5" min="0" step="0.25">
+                </label>
+            </label>
         </form>
     </div>
 </body>

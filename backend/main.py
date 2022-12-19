@@ -1,8 +1,7 @@
-import json
-
-from fastapi import FastAPI, Body
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
+from pydantic import BaseModel
 
 from equation import makeSTL
 
@@ -27,15 +26,24 @@ async def root() -> FileResponse:
     return FileResponse('../frontend/main.html')
 
 
+class FunctionSTL(BaseModel):
+    formula: str
+    xMin: float
+    xMax: float
+    xStep: float
+    yMin: float
+    yMax: float
+    yStep: float
+
+
 @app.post('/equation', tags=['geometry'], status_code=204)
-async def equation(body: str = Body()) -> FileResponse:
+async def equation(func: FunctionSTL) -> FileResponse:
     """
     Gets an equation from the user to be turned into an STL
     :param body: an unparsed json containing formula key
     :return:
     """
-    formula = json.loads(body)['formula']
-    surface = makeSTL(formula.lower())
+    surface = makeSTL(func.formula.lower())
     surface.save('to_download.stl')
     return FileResponse('to_download.stl', media_type='model/stl', filename='equation.stl')
 
